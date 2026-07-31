@@ -27,6 +27,12 @@ def get_args():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     # group = parser.add_mutually_exclusive_group(required=True)
+    parser.add_argument(
+        "input_pos",
+        nargs="?",
+        default=None,
+        help="The directory or file that will be read (positional, opcional).",
+    )
     _ = parser.add_argument(
         "-i",
         "--input",
@@ -76,7 +82,20 @@ def get_args():
         default=4,
         help="Number of cores for multiprocessing.",
     )
-    return parser.parse_args()
+    _ = parser.add_argument(
+        "--dpi",
+        type=int,
+        default=300,
+        help="DPI for image convertion.",
+    )
+
+    args = parser.parse_args()
+    args.input = args.input or args.input_pos
+
+    if args.input is None:
+        parser.error("You need to pass an input file/directory using -i.")
+
+    return args
 
 
 def multi_init(log_queue: Queue):
@@ -89,14 +108,14 @@ def multi_init(log_queue: Queue):
     root.addHandler(queue_handler)
 
 
-def process_file(fargs: tuple[Path, Path, Path, str, float, bool]):
+def process_file(fargs: tuple[Path, Path, Path, str, float, bool, dpi]):
     """
     Pipeline function, all arguments are received in the Pool:
         - Log each action on each process
         - Manage dispatch
         - Create the JSON file with contents
     """
-    f, dispatch_path, output_path, ext, precision, ensure_ascii = fargs
+    f, dispatch_path, output_path, ext, precision, ensure_ascii, dpi = fargs
     logger = logging.getLogger(__name__)
     try:
         logger.info(f"processing file {f.name}.")
@@ -195,7 +214,15 @@ def main():
     logger.info(f"{len(data_paths)} files found.")
 
     p_args = [
-        (f, dispatch_path, output_path, args.ext, args.precision, args.ensure_ascii)
+        (
+            f,
+            dispatch_path,
+            output_path,
+            args.ext,
+            args.precision,
+            args.ensure_ascii,
+            args.dpi,
+        )
         for f in data_paths
     ]
 
