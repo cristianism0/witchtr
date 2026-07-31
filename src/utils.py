@@ -61,10 +61,10 @@ def dir_creator(output_path: Path) -> Path:
     Create the ocr-pipe/output directory in path.
     """
     now = datetime.now()
-    out= output_path / "output"
-    
+    out = output_path / "output"
+
     if output_path.exists() and out.exists():
-        out= output_path / f"output_{now.strftime('%y-%m-%d-%S')}"
+        out = output_path / f"output_{now.strftime('%y-%m-%d-%S')}"
 
     # out = base / "output"
     out.mkdir(parents=True)
@@ -73,7 +73,7 @@ def dir_creator(output_path: Path) -> Path:
 
 
 def dispatcher(
-    file: Path, dispatch_dir: Path, ext: str = "jpeg"
+    file: Path, dispatch_dir: Path, ext: str = "jpeg", dpi: int = 300
 ) -> tuple[list[Path], str]:
     """
     If the file is a PDF -> converts to the select kind of image.
@@ -81,5 +81,5 @@ def dispatcher(
     """
     _, suffix = get_ext(file)
     if suffix == ".pdf":
-        return pdf2img(file, dispatch_dir, ext=ext), suffix
+        return pdf2img(file, dispatch_dir, ext=ext, dpi=dpi), suffix
     return [file], suffix
