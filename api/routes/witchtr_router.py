@@ -16,7 +16,7 @@ from fastapi import (
 from sqlalchemy.orm import Session
 
 from api.database.repository import DBJobRepository
-from api.database.session import Base, get_db, psql_engine
+from api.database.session import get_db
 from api.services.witchtr_service import run_job
 
 router = APIRouter()
@@ -26,8 +26,6 @@ INPUT_DIR = Path("api/data/input")
 OUTPUT_DIR = Path("api/data/output")
 INPUT_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
-Base.metadata.create_all(bind=psql_engine)
 
 ALLOWED_TYPES = [
     "application/pdf",

@@ -27,4 +27,16 @@ dev = [
     "ruff>=0.15.20",
 ]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["src", "api"]
+omit = ["tests/*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 60
+
 
