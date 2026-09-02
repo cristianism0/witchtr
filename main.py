@@ -27,7 +27,7 @@ def get_args():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     # group = parser.add_mutually_exclusive_group(required=True)
-    parser.add_argument(
+    _ = parser.add_argument(
         "input_pos",
         nargs="?",
         default=None,
@@ -159,7 +159,7 @@ def process_file(fargs: tuple[Path, Path, Path, str, float, bool, dpi]):
             if mean <= precision:
                 logger.warning(f"{f.name}: with mean {mean:.2f} lower than {precision}")
 
-            json_from_image(
+            _ = json_from_image(
                 file_path=f,
                 output_path=output_path,
                 text=text,
